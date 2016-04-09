@@ -1,6 +1,12 @@
 function divElementEnostavniTekst(sporocilo) {
   var jeSmesko = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
-  if (jeSmesko) {
+  
+  var jeSlika = (sporocilo.match(/https?:\/\/.*\.(?:png|jpg|gif)/ig));
+  if(jeSlika){
+    return $('<div style="font-weight: bold"></div>').html(sporocilo);
+  }
+  
+  if(jeSmesko) {
     sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace('&lt;img', '<img').replace('png\' /&gt;', 'png\' />');
     return $('<div style="font-weight: bold"></div>').html(sporocilo);
   } else {
@@ -15,6 +21,7 @@ function divElementHtmlTekst(sporocilo) {
 function procesirajVnosUporabnika(klepetApp, socket) {
   var sporocilo = $('#poslji-sporocilo').val();
   sporocilo = dodajSmeske(sporocilo);
+  sporocilo = povezave(sporocilo);
   var sistemskoSporocilo;
 
   if (sporocilo.charAt(0) == '/') {
@@ -28,7 +35,10 @@ function procesirajVnosUporabnika(klepetApp, socket) {
     $('#sporocila').append(divElementEnostavniTekst(sporocilo));
     $('#sporocila').scrollTop($('#sporocila').prop('scrollHeight'));
   }
+  
 
+  
+  $('#sporocila').scrollTop($('#sporocila').prop('scrollHeight'));
   $('#poslji-sporocilo').val('');
 }
 
@@ -65,6 +75,7 @@ $(document).ready(function() {
       sporocilo = rezultat.sporocilo;
     }
     $('#sporocila').append(divElementHtmlTekst(sporocilo));
+   
   });
 
   socket.on('pridruzitevOdgovor', function(rezultat) {
@@ -76,6 +87,7 @@ $(document).ready(function() {
   socket.on('sporocilo', function (sporocilo) {
     var novElement = divElementEnostavniTekst(sporocilo.besedilo);
     $('#sporocila').append(novElement);
+    
   });
   
   socket.on('kanali', function(kanali) {
@@ -128,6 +140,24 @@ function dodajSmeske(vhodnoBesedilo) {
     vhodnoBesedilo = vhodnoBesedilo.replace(smesko,
       "<img src='http://sandbox.lavbic.net/teaching/OIS/gradivo/" +
       preslikovalnaTabela[smesko] + "' />");
+  }
+  return vhodnoBesedilo;
+}
+
+function povezave(vhodnoBesedilo){
+  
+   var zasebno = vhodnoBesedilo.indexOf('/zasebno') > -1;
+   if (zasebno) {
+     vhodnoBesedilo = vhodnoBesedilo.substring(0, vhodnoBesedilo.length-1);
+   }
+  
+  if(vhodnoBesedilo.match(/https?:\/\/.*\.(?:png|jpg|gif)/ig)){
+      var link = vhodnoBesedilo;
+      vhodnoBesedilo += "<img src='"+ link +"' style='margin-left:20px;', width='200px' />";
+  }
+  
+  if (zasebno) {
+     vhodnoBesedilo += "\"";
   }
   return vhodnoBesedilo;
 }
