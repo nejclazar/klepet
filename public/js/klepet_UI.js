@@ -112,7 +112,14 @@ $(document).ready(function() {
     procesirajVnosUporabnika(klepetApp, socket);
     return false;
   });
-  
+      
+  socket.on('dregljaj', function(){
+    $('#vsebina').jrumble();
+    $('#vsebina').trigger('startRumble');
+    setTimeout(function(){
+      $('#vsebina').trigger('stopRumble');
+    }, 1500);  
+  });
   
 });
 
