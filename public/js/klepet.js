@@ -27,6 +27,16 @@ Klepet.prototype.procesirajUkaz = function(ukaz) {
       var kanal = besede.join(' ');
       this.spremeniKanal(kanal);
       break;
+    case 'dregljaj':
+      besede.shift();
+      var uporabnik = besede.join(' ');
+      if(uporabnik.length > 0){
+       this.socket.emit('dregljaj', {vzdevek: uporabnik});
+       sporocilo = 'Dregljaj za '+ uporabnik;
+      } else{
+       sporocilo = 'Neznan ukaz'; 
+      }
+      break;
     case 'vzdevek':
       besede.shift();
       var vzdevek = besede.join(' ');
