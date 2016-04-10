@@ -1,12 +1,21 @@
 function divElementEnostavniTekst(sporocilo) {
   var jeSmesko = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
   
+<<<<<<< HEAD
   var jeSlika = (sporocilo.match(/https?:\/\/.*\.(?:png|jpg|gif)/ig));
   if(jeSlika){
     return $('<div style="font-weight: bold"></div>').html(sporocilo);
   }
   
   if(jeSmesko) {
+=======
+  var jeVideo = (sporocilo.match('https:\/\/www\.youtube\.com\/watch\\?v=[^\\s]{11}', 'gi'));
+   if(jeVideo){
+     return $('<div style="font-weight: bold"></div>').html(sporocilo);
+  }
+  
+  if (jeSmesko) {
+>>>>>>> youtube
     sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace('&lt;img', '<img').replace('png\' /&gt;', 'png\' />');
     return $('<div style="font-weight: bold"></div>').html(sporocilo);
   } else {
@@ -21,7 +30,11 @@ function divElementHtmlTekst(sporocilo) {
 function procesirajVnosUporabnika(klepetApp, socket) {
   var sporocilo = $('#poslji-sporocilo').val();
   sporocilo = dodajSmeske(sporocilo);
+<<<<<<< HEAD
   sporocilo = povezave(sporocilo);
+=======
+  sporocilo = video(sporocilo);
+>>>>>>> youtube
   var sistemskoSporocilo;
 
   if (sporocilo.charAt(0) == '/') {
@@ -150,6 +163,7 @@ function dodajSmeske(vhodnoBesedilo) {
   return vhodnoBesedilo;
 }
 
+<<<<<<< HEAD
 function povezave(vhodnoBesedilo){
   
    var zasebno = vhodnoBesedilo.indexOf('/zasebno') > -1;
@@ -167,3 +181,29 @@ function povezave(vhodnoBesedilo){
   }
   return vhodnoBesedilo;
 }
+=======
+/*function ID_posnetka(vhodnoBesedilo){ 
+  var regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*)./;
+  var match = vhodnoBesedilo.match(regExp);
+  if (match && match[2].length == 11) {
+    return match[2];
+  }
+}*/
+
+
+function video(vhodnoBesedilo){
+  if(vhodnoBesedilo.match('https:\/\/www\.youtube\.com\/watch\\?v=[^\\s]{11}', 'gi')){
+       var link = vhodnoBesedilo;
+       var id = link.substring(32, link.length);
+       if(link.substring(link.length - 14, link.length) == '&nohtml5=False'){
+        id = link.substring(32, link.length - 14);
+       }
+       var url = 'https://www.youtube.com/embed/' + id;
+       vhodnoBesedilo += "<iframe width=200px height=150px margin-left:20px src='" + url + "' frameborder='0px' allowfullscreen></iframe>";
+       console.log(id);
+  }
+   return vhodnoBesedilo;
+}
+
+
+>>>>>>> youtube
